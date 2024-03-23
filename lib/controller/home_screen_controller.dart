@@ -64,7 +64,35 @@ class HomeScreenController extends ChangeNotifier {
   }
 
   // edit data
-  Future editData() async {}
+  Future editData({
+    required String id,
+    required String name,
+    required String role,
+  }) async {
+    isLoading = true;
+    notifyListeners();
+
+    final url = "$baseUrl/employees/update/$id/";
+
+    final parsedUrl = Uri.parse(url);
+
+    final response = await http.put(parsedUrl, body: {
+      "name": name,
+      "role": role,
+    });
+    if (response.statusCode == 200) {
+      print("Employee updated successfully");
+      getData();
+      isLoading = false;
+      notifyListeners();
+      return true;
+    } else {
+      print("failed to edit employee");
+      isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
 
   // delete data
   Future deleteData(String id) async {
